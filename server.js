@@ -7,9 +7,13 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import rateLimit from 'express-rate-limit';
 
+import associate from './models/associate.js';
+
 import xssProtectMiddleware from './middlewares/xssProtect.js';
 import notFoundMiddleware from './middlewares/notFound.js';
 import errorMiddleware from './middlewares/error.js';
+
+associate();
 
 const app = express();
 
