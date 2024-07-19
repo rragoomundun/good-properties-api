@@ -33,6 +33,10 @@ DB_PASSWORD=123456789
 DB_PORT=5432
 
 
+# The user password minimum length
+PASSWORD_MIN_LENGTH=12
+
+
 # The application front end url
 APP_URL=good-properties.r3tests.net
 ```
@@ -113,6 +117,6 @@ npm run gendoc
 
 ---
 
-- Version: 0.1.0
+- Version: 0.2.0
 - Author: Raphaël RAGOOMUNDUN
 - License: MIT

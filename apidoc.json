@@ -1,11 +1,11 @@
 {
   "name": "Good Properties API",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Backend API for Good Properties",
   "title": "Good Properties API",
   "url": "http://localhost:5000/v1",
   "sampleUrl": "http://localhost:5000/v1",
-  "order": ["API", "APIGetStatus"],
+  "order": ["API", "APIGetStatus", "Auth", "AuthRegister"],
   "template": {
     "forceLanguage": "en",
     "withCompare": false,
