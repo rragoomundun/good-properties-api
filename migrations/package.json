@@ -1,0 +1,13 @@
+{
+  "name": "good-properties-migrations",
+  "version": "1.0.0",
+  "description": "Migration utilities for Good Properties",
+  "main": " ",
+  "scripts": {
+    "migration:create": "npx sequelize-cli migration:create",
+    "migration:migrate": "npx sequelize-cli db:migrate",
+    "migration:rollback": "npx sequelize-cli db:migrate:undo"
+  },
+  "author": "Raphael Ragoomundun",
+  "license": "MIT"
+}
