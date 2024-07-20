@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 
+import cryptUtil from '../utils/crypt.js';
 import dbUtil from '../utils/db.js';
 
 const Token = dbUtil.define(
@@ -23,7 +24,16 @@ const Token = dbUtil.define(
       allowNull: false
     }
   },
-  { timestamps: false, tableName: 'tokens' }
+  {
+    timestamps: false,
+    tableName: 'tokens',
+    hooks: {
+      beforeCreate: (token) => {
+        token.value = cryptUtil.getDigestHash(cryptUtil.getToken());
+        token.expire = Date.now() + 1000 * 60 * 60; // Expires in 1 hour
+      }
+    }
+  }
 );
 
 export default Token;
