@@ -4,6 +4,8 @@ import User from '../models/User.js';
 import Token from '../models/Token.js';
 
 import dbUtil from '../utils/db.js';
+import userUtil from '../utils/user.js';
+import mailUtil from '../utils/mail.js';
 
 import ErrorResponse from '../classes/ErrorResponse.js';
 
@@ -35,7 +37,7 @@ const register = async (req, res, next) => {
   let result;
 
   try {
-    result = dbUtil.transaction(async (transaction) => {
+    result = await dbUtil.transaction(async (transaction) => {
       const user = await User.create({ email, password }, { transaction });
       const token = await Token.create(
         { type: 'register-confirm', value: 'empty', expire: Date.now(), user_id: user.id },
@@ -45,6 +47,21 @@ const register = async (req, res, next) => {
       return { user, token };
     });
   } catch {
+    return next(new ErrorResponse('Account creation failed', httpStatus.INTERNAL_SERVER_ERROR, 'ACCOUNT_CREATION'));
+  }
+
+  // Send confirmation e-mail
+  try {
+    const mailOptions = {
+      mail: 'registration',
+      userId: result.user.id,
+      templateOptions: {
+        confirmationLink: `${process.env.APP_URL}/register/confirm/${result.token.value}`
+      }
+    };
+    await mailUtil.send(mailOptions);
+  } catch {
+    await userUtil.deleteUser(result.user.id);
     return next(new ErrorResponse('Account creation failed', httpStatus.INTERNAL_SERVER_ERROR, 'ACCOUNT_CREATION'));
   }
 

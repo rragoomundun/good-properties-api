@@ -33,6 +33,35 @@ DB_PASSWORD=123456789
 DB_PORT=5432
 
 
+# AWS SES Region
+AWS_SES_REGION=sesregion
+
+# AWS API Access Key
+AWS_ACCESS_KEY_ID=accesskeyid
+
+# AWS API Secret Access Key
+AWS_SECRET_ACCESS_KEY=secretaccesskey
+
+# AWS S3 Upload Bucket Region
+AWS_S3_REGION=s3region
+
+# AWS S3 Upload Image Bucket Name
+AWS_S3_IMAGE_BUCKET_NAME=s3bucketname
+
+# AWS S3 Upload Image Bucket Directory
+AWS_S3_IMAGE_BUCKET_FOLDER=directory
+
+
+# From email name
+FROM_NAME=Good Properties
+
+# From email adress
+FROM_EMAIL=noreply@test.com
+
+# Reply email adress
+REPLY_EMAIL=contact@test.com
+
+
 # The user password minimum length
 PASSWORD_MIN_LENGTH=12
 
