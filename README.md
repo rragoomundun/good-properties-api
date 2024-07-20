@@ -62,6 +62,16 @@ FROM_EMAIL=noreply@test.com
 REPLY_EMAIL=contact@test.com
 
 
+# JWT Token secret code
+JWT_SECRET=secret
+
+# JWT Token duration. On this example it will expire in 180 days
+JWT_EXPIRE=180d
+
+# JWT Token cookie duration. The value is in days.
+JWT_COOKIE_EXPIRE=180
+
+
 # The user password minimum length
 PASSWORD_MIN_LENGTH=12
 

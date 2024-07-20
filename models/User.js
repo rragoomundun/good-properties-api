@@ -37,4 +37,14 @@ const User = dbUtil.define(
   }
 );
 
+User.prototype.verifyPassword = async (password, hash) => {
+  return await bcrypt.compare(password, hash);
+};
+
+User.prototype.getSignedJWTToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE
+  });
+};
+
 export default User;

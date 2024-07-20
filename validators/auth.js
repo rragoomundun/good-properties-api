@@ -36,4 +36,19 @@ const registerValidator = validation([
     })
 ]);
 
-export { registerValidator };
+const loginValidator = validation([
+  body('email')
+    .notEmpty()
+    .withMessage('message=Please add an email;type=NO_EMAIL')
+    .isEmail()
+    .withMessage('message=Please add a valid email;type=INVALID_EMAIL'),
+  body('password')
+    .notEmpty()
+    .withMessage('message=Please add a password;type=NO_PASSWORD')
+    .isLength({ min: process.env.PASSWORD_MIN_LENGTH })
+    .withMessage(
+      `message=The password has to have at least ${process.env.PASSWORD_MIN_LENGTH} characters;type=PASSWORD_MIN_LENGTH`
+    )
+]);
+
+export { registerValidator, loginValidator };
