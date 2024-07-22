@@ -5,7 +5,16 @@
   "title": "Good Properties API",
   "url": "http://localhost:5000/v1",
   "sampleUrl": "http://localhost:5000/v1",
-  "order": ["API", "APIGetStatus", "Auth", "AuthRegister", "AuthRegisterConfirm", "AuthLogin", "AuthForgotPassword"],
+  "order": [
+    "API",
+    "APIGetStatus",
+    "Auth",
+    "AuthRegister",
+    "AuthRegisterConfirm",
+    "AuthLogin",
+    "AuthForgotPassword",
+    "AuthResetPassword"
+  ],
   "template": {
     "forceLanguage": "en",
     "withCompare": false,
