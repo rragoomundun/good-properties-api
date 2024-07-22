@@ -1,6 +1,16 @@
 import express from 'express';
 
-import { register, registerConfirm, login, logout, forgotPassword, resetPassword } from '../controllers/auth.js';
+import {
+  register,
+  registerConfirm,
+  login,
+  logout,
+  forgotPassword,
+  resetPassword,
+  authorized
+} from '../controllers/auth.js';
+
+import authorize from '../middlewares/authorize.js';
 
 import {
   loginValidator,
@@ -17,6 +27,7 @@ router
   .post('/login', loginValidator, login)
   .get('/logout', logout)
   .post('/password/forgot', forgotPasswordValidator, forgotPassword)
-  .post('/password/reset/:resetPasswordToken', resetPasswordValidator, resetPassword);
+  .post('/password/reset/:resetPasswordToken', resetPasswordValidator, resetPassword)
+  .get('/authorized', authorize, authorized);
 
 export default router;
