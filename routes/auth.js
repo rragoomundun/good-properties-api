@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { register, registerConfirm, login, forgotPassword, resetPassword } from '../controllers/auth.js';
+import { register, registerConfirm, login, logout, forgotPassword, resetPassword } from '../controllers/auth.js';
 
 import {
   loginValidator,
@@ -15,6 +15,7 @@ router
   .post('/register', registerValidator, register)
   .post('/register/confirm/:confirmationToken', registerConfirm)
   .post('/login', loginValidator, login)
+  .get('/logout', logout)
   .post('/password/forgot', forgotPasswordValidator, forgotPassword)
   .post('/password/reset/:resetPasswordToken', resetPasswordValidator, resetPassword);
 
