@@ -74,15 +74,21 @@ const versionPrefix = '/v1';
 
 // Route files
 import apiRoute from './routes/api.js';
+import authRoute from './routes/auth.js';
 
 // Mount routers
 app.use(`${versionPrefix}/api`, apiRoute);
+app.use(`${versionPrefix}/auth`, authRoute);
 
 // Errors
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
 
+// Crons
+import tokenCrons from './crons/token.js';
+
+tokenCrons.clearTokens();
+
 app.listen(process.env.PORT, () => {
-  console.log('');
   console.log(`[OK] Server is running in ${process.env.NODE_ENV} mode on port ${process.env.PORT}`.green);
 });
