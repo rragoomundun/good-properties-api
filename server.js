@@ -75,10 +75,12 @@ const versionPrefix = '/v1';
 // Route files
 import apiRoute from './routes/api.js';
 import authRoute from './routes/auth.js';
+import userRoute from './routes/user.js';
 
 // Mount routers
 app.use(`${versionPrefix}/api`, apiRoute);
 app.use(`${versionPrefix}/auth`, authRoute);
+app.use(`${versionPrefix}/user`, userRoute);
 
 // Errors
 app.use(notFoundMiddleware);
