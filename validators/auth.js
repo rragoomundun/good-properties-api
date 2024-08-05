@@ -57,6 +57,13 @@ const forgotPasswordValidator = validation([
     .withMessage('message=Please add an email;type=NO_EMAIL')
     .isEmail()
     .withMessage('message=Please add a valid email;type=INVALID_EMAIL')
+    .custom(async (email) => {
+      const user = await User.findOne({ where: { email } });
+
+      if (!user) {
+        throw new Error('message=No account found for this email;type=EMAIL_NOT_FOUND');
+      }
+    })
 ]);
 
 const resetPasswordValidator = validation([
