@@ -183,7 +183,6 @@ const logout = async (req, res, next) => {
  * }
  *
  * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
- * @apiError (Error (400)) INVALID_EMAIL The email address is invalid
  * @apiError (Error (401)) UNCONFIRMED The account is unconfirmed
  * @apiError (Error (409)) ALREADY_RECOVERING A recovery procedure is already in progress
  * @apiError (Error (500)) EMAIL_SENDING_FAILED Cannot send recovery email
@@ -194,11 +193,6 @@ const forgotPassword = async (req, res, next) => {
   const { email } = req.body;
 
   const user = await User.findOne({ where: { email } });
-
-  if (!user) {
-    return next(new ErrorResponse('Invalid email address', httpStatus.BAD_REQUEST, 'INVALID_EMAIL'));
-  }
-
   const token = await Token.findOne({ where: { user_id: user.id } });
 
   if (token) {
