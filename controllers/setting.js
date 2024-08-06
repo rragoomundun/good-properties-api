@@ -31,4 +31,35 @@ const updateEmail = async (req, res, next) => {
   res.status(httpStatus.OK).end();
 };
 
-export { updateEmail };
+/**
+ * @api {PUT} /user/setting/password Update Password
+ * @apiGroup UserSetting
+ * @apiName UserSettingPassword
+ *
+ * @apiDescription Update the user password
+ *
+ * @apiBody {String} password The new password
+ * @apiBody {String} repeatedPassword The repeated new password
+ *
+ * @apiParamExample {json} Body Example
+ * {
+ *   "password": "123456789012",
+ *   "repeatedPassword": "123456789013"
+ * }
+ *
+ * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
+ *
+ * @apiPermission Private
+ */
+const updatePassword = async (req, res, next) => {
+  const { password } = req.body;
+  const user = await User.findOne({ where: { id: req.user.id } });
+
+  user.password = password;
+
+  await user.save();
+
+  res.status(httpStatus.OK).end();
+};
+
+export { updateEmail, updatePassword };
