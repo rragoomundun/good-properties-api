@@ -17,7 +17,9 @@
     "AuthResetPassword",
     "Authorized",
     "User",
-    "UserGetCurrentUser"
+    "UserGetCurrentUser",
+    "UserSetting",
+    "UserSettingEmail"
   ],
   "template": {
     "forceLanguage": "en",
