@@ -1,6 +1,7 @@
 import httpStatus from 'http-status-codes';
 
 import User from '../models/User.js';
+import Contact from '../models/Contact.js';
 
 /**
  * @api {PUT} /user/setting/email Update E-Mail
@@ -62,4 +63,37 @@ const updatePassword = async (req, res, next) => {
   res.status(httpStatus.OK).end();
 };
 
-export { updateEmail, updatePassword };
+/**
+ * @api {PUT} /user/setting/contact Update Contact
+ * @apiGroup UserSetting
+ * @apiName UserSettingContact
+ *
+ * @apiDesciption Update contact information
+ *
+ * @apiBody {String} email The contact e-mail
+ * @apiBody {String} telephone The contact telephone number
+ * @apiBody {String} whatsapp The contact WhatsApp number
+ *
+ * @apiParamExample {json} Body Example
+ * {
+ *   "email": "tom.apollo@example.com",
+ *   "telephone": "59202743",
+ *   "whatsapp": "59202743"
+ * }
+ *
+ * @apiPermission Private
+ */
+const updateContact = async (req, res, next) => {
+  const { email, telephone, whatsapp } = req.body;
+  const [contact] = await Contact.findOrCreate({ where: { user_id: req.user.id } });
+
+  contact.email = email;
+  contact.telephone = telephone;
+  contact.whatsapp = whatsapp;
+
+  await contact.save();
+
+  res.status(httpStatus.OK).end();
+};
+
+export { updateEmail, updatePassword, updateContact };

@@ -19,7 +19,8 @@
     "User",
     "UserGetCurrentUser",
     "UserSetting",
-    "UserSettingEmail"
+    "UserSettingEmail",
+    "UserSettingContact"
   ],
   "template": {
     "forceLanguage": "en",
