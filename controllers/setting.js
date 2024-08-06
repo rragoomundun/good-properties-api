@@ -96,4 +96,18 @@ const updateContact = async (req, res, next) => {
   res.status(httpStatus.OK).end();
 };
 
-export { updateEmail, updatePassword, updateContact };
+/**
+ * @api {DELETE} /user/setting/delete Delete Account
+ * @apiGroup UserSetting
+ * @apiName UserSettingDelete
+ *
+ * @apiDescription Delete the user account
+ *
+ * @apiPermission Private
+ */
+const deleteAccount = async (req, res, next) => {
+  await User.destroy({ where: { id: req.user.id } });
+  res.status(httpStatus.OK).end();
+};
+
+export { updateEmail, updatePassword, updateContact, deleteAccount };

@@ -20,7 +20,8 @@
     "UserGetCurrentUser",
     "UserSetting",
     "UserSettingEmail",
-    "UserSettingContact"
+    "UserSettingContact",
+    "UserSettingDelete"
   ],
   "template": {
     "forceLanguage": "en",
