@@ -18,6 +18,7 @@
     "Authorized",
     "User",
     "UserGetCurrentUser",
+    "UserGetCurrentUserContact",
     "UserSetting",
     "UserSettingEmail",
     "UserSettingContact",
