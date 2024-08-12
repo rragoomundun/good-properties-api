@@ -16,7 +16,7 @@ const validation = (validations) => {
         const resultArray = [];
 
         for (const result of originalResultArray) {
-          if (paths.includes(result.path) === false) {
+          if (paths.includes(result.path) === false && result.msg !== 'Invalid value') {
             resultArray.push(result);
             paths.push(result.path);
           }
@@ -30,7 +30,9 @@ const validation = (validations) => {
           return { message, type };
         });
 
-        error = new ErrorResponse(messages, httpStatus.BAD_REQUEST, 'INVALID_PARAMETERS');
+        if (messages.length) {
+          error = new ErrorResponse(messages, httpStatus.BAD_REQUEST, 'INVALID_PARAMETERS');
+        }
       }
 
       next(error);

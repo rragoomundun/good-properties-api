@@ -81,6 +81,8 @@ const updatePassword = async (req, res, next) => {
  *   "whatsapp": "59202743"
  * }
  *
+ * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
+ *
  * @apiPermission Private
  */
 const updateContact = async (req, res, next) => {

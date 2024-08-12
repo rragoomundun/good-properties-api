@@ -39,4 +39,22 @@ const updatePasswordValidator = validation([
     })
 ]);
 
-export { updateEmailValidator, updatePasswordValidator };
+const updateContactValidator = validation([
+  body('email').notEmpty().bail().isEmail().withMessage('message=Please add a valid email;type=INVALID_EMAIL'),
+  body('telephone')
+    .notEmpty()
+    .bail()
+    .isNumeric()
+    .withMessage('message=Only numbers are allowed;type=NUMBER_ONLY')
+    .isLength({ min: 7, max: 8 })
+    .withMessage('message=The phone number must have 7 or 8 digits;type=PHONE_DIGITS'),
+  body('whatsapp')
+    .notEmpty()
+    .bail()
+    .isNumeric()
+    .withMessage('message=Only numbers are allowed;type=NUMBER_ONLY')
+    .isLength({ min: 7, max: 8 })
+    .withMessage('message=The WhatsApp number must have 7 or 8 digits;type=WHATSAPP_DIGITS')
+]);
+
+export { updateEmailValidator, updatePasswordValidator, updateContactValidator };
