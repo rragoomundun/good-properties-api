@@ -27,7 +27,7 @@ const validation = (validations) => {
           const message = messageSplitted.find((messagePart) => messagePart.includes('message') === true).split('=')[1];
           const type = messageSplitted.find((messagePart) => messagePart.includes('type') === true).split('=')[1];
 
-          return { message, type };
+          return { message, type, field: result.path };
         });
 
         if (messages.length) {
