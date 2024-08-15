@@ -47,14 +47,14 @@ const updateContactValidator = validation([
     .isNumeric()
     .withMessage('message=Only numbers are allowed;type=NUMBER_ONLY')
     .isLength({ min: 7, max: 8 })
-    .withMessage('message=The phone number must have 7 or 8 digits;type=PHONE_DIGITS'),
+    .withMessage('message=The phone number must have 7 or 8 digits;type=NUMBER_LENGTH'),
   body('whatsapp')
     .notEmpty()
     .bail()
     .isNumeric()
     .withMessage('message=Only numbers are allowed;type=NUMBER_ONLY')
     .isLength({ min: 7, max: 8 })
-    .withMessage('message=The WhatsApp number must have 7 or 8 digits;type=WHATSAPP_DIGITS')
+    .withMessage('message=The WhatsApp number must have 7 or 8 digits;type=NUMBER_LENGTH')
 ]);
 
 export { updateEmailValidator, updatePasswordValidator, updateContactValidator };
