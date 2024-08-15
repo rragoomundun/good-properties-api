@@ -77,12 +77,14 @@ import apiRoute from './routes/api.js';
 import authRoute from './routes/auth.js';
 import userRoute from './routes/user.js';
 import settingRoute from './routes/setting.js';
+import uploadRoute from './routes/upload.js';
 
 // Mount routers
 app.use(`${versionPrefix}/api`, apiRoute);
 app.use(`${versionPrefix}/auth`, authRoute);
 app.use(`${versionPrefix}/user`, userRoute);
 app.use(`${versionPrefix}/user/setting`, settingRoute);
+app.use(`${versionPrefix}/file`, uploadRoute);
 
 // Errors
 app.use(notFoundMiddleware);
@@ -90,6 +92,7 @@ app.use(errorMiddleware);
 
 // Crons
 import tokenCrons from './crons/token.js';
+import { upload } from './controllers/upload.js';
 
 tokenCrons.clearTokens();
 
