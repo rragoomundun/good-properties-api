@@ -1,7 +1,15 @@
 import httpStatus from 'http-status-codes';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 
 import ErrorResponse from '../classes/ErrorResponse.js';
+
+const s3 = new S3Client({
+  region: process.env.AWS_S3_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+  }
+});
 
 /**
  * @api {POST} /file Upload file
@@ -25,15 +33,6 @@ import ErrorResponse from '../classes/ErrorResponse.js';
 
 const uploadFile = async (req, res, next) => {
   const { file } = req;
-
-  const s3 = new S3Client({
-    region: process.env.AWS_S3_REGION,
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-    }
-  });
-
   const params = {
     Bucket: process.env.AWS_S3_IMAGE_BUCKET_NAME,
     Key: `${process.env.AWS_S3_IMAGE_BUCKET_FOLDER}/${req.user.id}/${Date.now()}.${file.mimetype.split('/')[1]}`,
@@ -52,4 +51,33 @@ const uploadFile = async (req, res, next) => {
   }
 };
 
-export { uploadFile };
+/**
+ * @api {DELETE} /file Delete file
+ * @apiGroup File
+ * @apiName FileDelete
+ *
+ * @apiDescription Delete a file.
+ *
+ * @apiBody {String} fileName The path to the file
+ *
+ * @apiError (Error (400)) INVALID_PARAMETERS The fileName parameter is invalid
+ * @apiError (Error (500)) DELETION_FAILED Cannot delete file
+ *
+ * @apiPermission Private
+ */
+const deleteFile = async (req, res, next) => {
+  const { fileName } = req.body;
+  const params = {
+    Bucket: process.env.AWS_S3_IMAGE_BUCKET_NAME,
+    Key: fileName
+  };
+
+  try {
+    const data = await s3.send(new DeleteObjectCommand(params));
+    res.status(httpStatus.OK).end();
+  } catch {
+    next(new ErrorResponse('Cannot delete file', httpStatus.INTERNAL_SERVER_ERROR, 'DELETION_FAILED'));
+  }
+};
+
+export { uploadFile, deleteFile };

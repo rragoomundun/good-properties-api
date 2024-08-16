@@ -22,7 +22,10 @@
     "UserSetting",
     "UserSettingEmail",
     "UserSettingContact",
-    "UserSettingDelete"
+    "UserSettingDelete",
+    "File",
+    "FileUpload",
+    "FileDelete"
   ],
   "template": {
     "forceLanguage": "en",

@@ -1,4 +1,4 @@
-import { check } from 'express-validator';
+import { check, body } from 'express-validator';
 
 import validation from './validation.js';
 
@@ -24,4 +24,8 @@ const fileUploadValidator = validation([
   })
 ]);
 
-export { fileUploadValidator };
+const fileDeleteValidator = validation([
+  body('fileName').notEmpty().withMessage('message=No file name;type=NO_FILENAME')
+]);
+
+export { fileUploadValidator, fileDeleteValidator };

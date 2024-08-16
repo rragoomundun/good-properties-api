@@ -68,7 +68,7 @@ const updatePassword = async (req, res, next) => {
  * @apiGroup UserSetting
  * @apiName UserSettingContact
  *
- * @apiDesciption Update contact information
+ * @apiDescription Update contact information
  *
  * @apiBody {String} email The contact e-mail
  * @apiBody {String} telephone The contact telephone number
