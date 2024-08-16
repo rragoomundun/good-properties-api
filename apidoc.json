@@ -23,6 +23,8 @@
     "UserSettingEmail",
     "UserSettingContact",
     "UserSettingDelete",
+    "Offer",
+    "OfferFeatures",
     "File",
     "FileUpload",
     "FileDelete"
