@@ -25,6 +25,7 @@
     "UserSettingDelete",
     "Offer",
     "OfferFeatures",
+    "OfferCreate",
     "File",
     "FileUpload",
     "FileDelete"
