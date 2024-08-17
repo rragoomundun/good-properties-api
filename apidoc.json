@@ -1,6 +1,6 @@
 {
   "name": "Good Properties API",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Backend API for Good Properties",
   "title": "Good Properties API",
   "url": "http://localhost:5000/v1",
@@ -22,7 +22,13 @@
     "UserSetting",
     "UserSettingEmail",
     "UserSettingContact",
-    "UserSettingDelete"
+    "UserSettingDelete",
+    "Offer",
+    "OfferFeatures",
+    "OfferCreate",
+    "File",
+    "FileUpload",
+    "FileDelete"
   ],
   "template": {
     "forceLanguage": "en",

@@ -77,12 +77,16 @@ import apiRoute from './routes/api.js';
 import authRoute from './routes/auth.js';
 import userRoute from './routes/user.js';
 import settingRoute from './routes/setting.js';
+import fileRoute from './routes/file.js';
+import offerRoute from './routes/offer.js';
 
 // Mount routers
 app.use(`${versionPrefix}/api`, apiRoute);
 app.use(`${versionPrefix}/auth`, authRoute);
 app.use(`${versionPrefix}/user`, userRoute);
 app.use(`${versionPrefix}/user/setting`, settingRoute);
+app.use(`${versionPrefix}/file`, fileRoute);
+app.use(`${versionPrefix}/offer`, offerRoute);
 
 // Errors
 app.use(notFoundMiddleware);

@@ -24,8 +24,10 @@ const validation = (validations) => {
 
         const messages = resultArray.map((result) => {
           const messageSplitted = result.msg.split(';');
-          const message = messageSplitted.find((messagePart) => messagePart.includes('message') === true).split('=')[1];
-          const type = messageSplitted.find((messagePart) => messagePart.includes('type') === true).split('=')[1];
+          const message = messageSplitted
+            .find((messagePart) => messagePart.includes('message=') === true)
+            .split('=')[1];
+          const type = messageSplitted.find((messagePart) => messagePart.includes('type=') === true).split('=')[1];
 
           return { message, type, field: result.path };
         });

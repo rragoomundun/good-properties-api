@@ -1,6 +1,6 @@
 {
   "name": "good-properties-api",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "API for Good Properties website",
   "main": "server.js",
   "type": "module",
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/rragoomundun/good-properties-api#readme",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.631.0",
     "@aws-sdk/client-ses": "^3.616.0",
     "apidoc": "^1.2.0",
     "bcrypt": "^5.1.1",
@@ -36,6 +37,7 @@
     "http-status-codes": "^2.3.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
     "mustache": "^4.2.0",
     "node-cron": "^3.0.3",
     "nodemailer": "^6.9.14",
