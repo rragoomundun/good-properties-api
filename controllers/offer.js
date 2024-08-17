@@ -5,6 +5,7 @@ import OfferImage from '../models/OfferImage.js';
 import OfferFeature from '../models/OfferFeature.js';
 import OfferOfferFeature from '../models/OfferOfferFeature.js';
 import ErrorResponse from '../classes/ErrorResponse.js';
+import Contact from '../models/Contact.js';
 
 import dbUtil from '../utils/db.js';
 
@@ -67,12 +68,19 @@ const getFeatures = async (req, res, next) => {
  *   "features": [2, 4, 9]
  * }
  *
+ * @apiError (Error (400)) NO_CONTACT The user has no contact information
  * @apiError (Error (400)) INVALID_PARAMETERS One or more parameters are invalid
  * @apiError (Error (500)) CREATION_FAILED Cannot create offer
  *
  * @apiPermission Private
  */
 const createOffer = async (req, res, next) => {
+  const contact = await Contact.findOne({ where: { user_id: req.user.id } });
+
+  if (!contact || (!contact.email && !contact.telephone && !contact.whatsapp)) {
+    return next(new ErrorResponse('The user has no contact information', httpStatus.BAD_REQUEST, 'NO_CONTACT'));
+  }
+
   const {
     images,
     type_of_good,
