@@ -34,12 +34,12 @@ const Offer = dbUtil.define(
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    city: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
     description: {
       type: DataTypes.TEXT
+    },
+    city_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     }
   },
   { timestamps: false, tableName: 'offers' }
