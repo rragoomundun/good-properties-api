@@ -54,7 +54,7 @@ const getFeatures = async (req, res, next) => {
  * @apiBody {Number} city_id The city id
  * @apiBody {Number[]} features The features of the offer
  *
- * @apiBodyExample Body Example
+ * @apiParamExample {json} Body Example
  * {
  *   "images": ["room1.jpg"],
  *   "type_of_good": "room",
@@ -66,6 +66,12 @@ const getFeatures = async (req, res, next) => {
  *   "description": "Lorem ipsum...",
  *   "city_id": 67865,
  *   "features": [2, 4, 9]
+ * }
+ *
+ * @apiSuccess (Success (200)) {Number} id The created offer id
+ * @apiSuccessExample Success Example
+ * {
+ *   "id": 21
  * }
  *
  * @apiError (Error (400)) NO_CONTACT The user has no contact information
@@ -97,7 +103,7 @@ const createOffer = async (req, res, next) => {
   let result;
 
   try {
-    result = dbUtil.transaction(async (transaction) => {
+    result = await dbUtil.transaction(async (transaction) => {
       const offer = await Offer.create(
         {
           type_of_good,
@@ -118,12 +124,14 @@ const createOffer = async (req, res, next) => {
 
       const offerOfferFeatureData = features.map((feature) => ({ offer_id: offer.id, offer_feature_id: feature }));
       await OfferOfferFeature.bulkCreate(offerOfferFeatureData, { transaction });
+
+      return { offer };
     });
   } catch {
     return next(new ErrorResponse('Cannot create offer', httpStatus.INTERNAL_SERVER_ERROR, 'CREATION_FAILED'));
   }
 
-  res.status(httpStatus.OK).end();
+  res.status(httpStatus.OK).json({ id: result.offer.id });
 };
 
 export { getFeatures, createOffer };
