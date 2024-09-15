@@ -44,7 +44,7 @@ const uploadFile = async (req, res, next) => {
     await s3.send(new PutObjectCommand(params));
 
     res.status(httpStatus.OK).json({
-      link: `${params.Bucket}/${params.Key}`,
+      link: `https://${params.Bucket}/${params.Key}`,
       key: params.Key
     });
   } catch {
