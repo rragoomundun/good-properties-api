@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { createOffer, getFeatures, getOffer, getMyOffers, getMyOffersMeta } from '../controllers/offer.js';
+import { createOffer, getFeatures, getMyOffersMeta, getMyOffers, getOffer } from '../controllers/offer.js';
 
 import authorize from '../middlewares/authorize.js';
 

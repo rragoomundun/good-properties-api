@@ -146,11 +146,11 @@ const getOffer = async (req, res, next) => {
  *
  * @apiDescription Get meta information for user's offers.
  *
- * @apiSuccess (Success (200)) {Number} nbPages The number of pages for user's offers.
+ * @apiSuccess (Success (200)) {Number} nb_pages The number of pages for user's offers.
  *
  * @apiSuccessExample Success Example
  * {
- *   "nbPages": 4
+ *   "nb_pages": 4
  * }
  *
  * @apiPermission Private
@@ -161,7 +161,7 @@ const getMyOffersMeta = async (req, res, next) => {
   });
   const nbPages = Math.ceil(totalOffers / MY_OFFERS_PAGE_LIMIT);
 
-  res.status(httpStatus.OK).json({ nbPages });
+  res.status(httpStatus.OK).json({ nb_pages: nbPages });
 };
 
 /**
@@ -342,4 +342,8 @@ const createOffer = async (req, res, next) => {
   res.status(httpStatus.OK).json({ id: result.offer.id });
 };
 
+<<<<<<< HEAD
 export { getFeatures, getOffer, getMyOffersMeta, getMyOffers, createOffer };
+=======
+export { getFeatures, getMyOffersMeta, getMyOffers, getOffer, createOffer };
+>>>>>>> hotfix/offer-meta-nb-pages-rename
