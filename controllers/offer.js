@@ -342,8 +342,4 @@ const createOffer = async (req, res, next) => {
   res.status(httpStatus.OK).json({ id: result.offer.id });
 };
 
-<<<<<<< HEAD
-export { getFeatures, getOffer, getMyOffersMeta, getMyOffers, createOffer };
-=======
 export { getFeatures, getMyOffersMeta, getMyOffers, getOffer, createOffer };
->>>>>>> hotfix/offer-meta-nb-pages-rename
