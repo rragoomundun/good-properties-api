@@ -9,6 +9,8 @@ import Contact from '../models/Contact.js';
 
 import dbUtil from '../utils/db.js';
 
+const MY_OFFERS_PAGE_LIMIT = 20;
+
 /**
  * @api {GET} /offer/features Get Features
  * @apiGroup Offer
@@ -138,6 +140,111 @@ const getOffer = async (req, res, next) => {
 };
 
 /**
+ * @api {GET} /offer/my-offers/meta My Offers Meta
+ * @apiGroup Offer
+ * @apiName OfferMyOffersMeta
+ *
+ * @apiDescription Get meta information for user's offers.
+ *
+ * @apiSuccess (Success (200)) {Number} nb_pages The number of pages for user's offers.
+ *
+ * @apiSuccessExample Success Example
+ * {
+ *   "nb_pages": 4
+ * }
+ *
+ * @apiPermission Private
+ */
+const getMyOffersMeta = async (req, res, next) => {
+  const totalOffers = await Offer.count({
+    where: { user_id: req.user.id }
+  });
+  const nbPages = Math.ceil(totalOffers / MY_OFFERS_PAGE_LIMIT);
+
+  res.status(httpStatus.OK).json({ nb_pages: nbPages });
+};
+
+/**
+ * @api {GET} /offer/my-offers My Offers
+ * @apiGroup Offer
+ * @apiName OfferMyOffers
+ *
+ * @apiDescription Get current user offers.
+ *
+ * @apiQuery {Number} [page] The page
+ *
+ * @apiSuccess (Success (200)) {Number} id The offer id.
+ * @apiSuccess (Success (200)) {String[]} images The offer images.
+ * @apiSuccess (Success (200)) {String} type_of_good The offer type of good.
+ * @apiSuccess (Success (200)) {String} transaction_type The offer transaction type.
+ * @apiSuccess (Success (200)) {Number} price The offer price.
+ * @apiSuccess (Success (200)) {Number} city_id The offer city id.
+ * @apiSuccess (Success (200)) {Number} square_meters The offer square meters.
+ * @apiSuccess (Success (200)) {Number} nb_rooms The offer number of rooms.
+ * @apiSuccess (Success (200)) {Number} nb_bedrooms The offer number of bedrooms.
+ *
+ * @apiSuccessExample Success Example
+ * [
+ *   {
+ *      "id": 52,
+ *      "images": [
+ *        "https://img.r3tests.net/good-properties/29/1726480453039.jpeg",
+ *        "https://img.r3tests.net/good-properties/29/1726480453050.jpeg"
+ *      ]
+ *      "type_of_good": "apartment",
+ *      "transaction_type": "to-rent",
+ *      "price": 8000,
+ *      "city_id": 67865,
+ *      "square_meters": 24,
+ *      "nb_rooms": 2,
+ *      "nb_bedrooms": 1
+ *   }
+ * ]
+ *
+ * @apiPermission Private
+ */
+const getMyOffers = async (req, res, next) => {
+  let page, offset;
+
+  if (req.query.page) {
+    page = req.query.page - 1;
+  } else {
+    page = 0;
+  }
+
+  offset = page * MY_OFFERS_PAGE_LIMIT;
+
+  const offers = (
+    await Offer.findAll({
+      where: { user_id: req.user.id },
+      include: {
+        model: OfferImage,
+        required: true
+      },
+      limit: MY_OFFERS_PAGE_LIMIT,
+      offset
+    })
+  ).map((offer) => {
+    const { id, type_of_good, transaction_type, price, city_id, square_meters, nb_rooms, nb_bedrooms } = offer;
+    const images = offer.OfferImages.map((image) => image.link);
+
+    return {
+      id,
+      images,
+      type_of_good,
+      transaction_type,
+      price,
+      city_id,
+      square_meters,
+      nb_rooms,
+      nb_bedrooms
+    };
+  });
+
+  res.status(httpStatus.OK).json(offers);
+};
+
+/**
  * @api {POST} /offer Create Offer
  * @apiGroup Offer
  * @apiName OfferCreate
@@ -235,4 +342,4 @@ const createOffer = async (req, res, next) => {
   res.status(httpStatus.OK).json({ id: result.offer.id });
 };
 
-export { getFeatures, getOffer, createOffer };
+export { getFeatures, getMyOffersMeta, getMyOffers, getOffer, createOffer };
