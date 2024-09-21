@@ -1,6 +1,6 @@
 {
   "name": "Good Properties API",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Backend API for Good Properties",
   "title": "Good Properties API",
   "url": "http://localhost:5000/v1",
