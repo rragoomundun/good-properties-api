@@ -1,5 +1,7 @@
 import httpStatus from 'http-status-codes';
 
+import { Op } from 'sequelize';
+
 import Offer from '../models/Offer.js';
 import OfferImage from '../models/OfferImage.js';
 import OfferFeature from '../models/OfferFeature.js';
@@ -254,7 +256,7 @@ const getMyOffers = async (req, res, next) => {
  * @apiBody {String[]} images The offer images
  * @apiBody {String="house","apartment","room"} type_of_good The type of good
  * @apiBody {String="to-sell","to-rent"} transaction_type The type of transaction
- * @æpiBody {Number} square_meters The number of square meters
+ * @apiBody {Number} square_meters The number of square meters
  * @apiBody {Number} nb_rooms The number of rooms
  * @apiBody {Number} nb_bedrooms The number of bedrooms
  * @apiBody {Number} price The price
@@ -342,4 +344,132 @@ const createOffer = async (req, res, next) => {
   res.status(httpStatus.OK).json({ id: result.offer.id });
 };
 
-export { getFeatures, getMyOffersMeta, getMyOffers, getOffer, createOffer };
+/**
+ * @api {GET} /offer/search Search Offers
+ * @apiGroup Offer
+ * @apiName OfferSearch
+ *
+ * @apiDescription Search for offers
+ *
+ * @apiQuery {String="house","apartment","room"} type_of_good The type of good
+ * @apiQuery {String="to-sell","to-rent"} transaction_type The type of transaction
+ * @apiQuery {Number[]} city_ids A list of city id
+ * @apiQuery {Number} [min_price] The mimimum price
+ * @apiQuery {Number} [max_price] The maximum price
+ * @apiQuery {Number} [min_square_meters] The minimum square meters
+ * @apiQuery {Number} [max_square_meters] The maximum square meters
+ * @apiQuery {Number} [nb_rooms] The number of rooms
+ * @apiQuery {Number} [nb_bedrooms] The number of bedrooms
+ *
+ * @apiSuccess (Success (200)) {Number} id The offer id.
+ * @apiSuccess (Success (200)) {String[]} images The offer images.
+ * @apiSuccess (Success (200)) {String} type_of_good The offer type of good.
+ * @apiSuccess (Success (200)) {String} transaction_type The offer transaction type.
+ * @apiSuccess (Success (200)) {Number} price The offer price.
+ * @apiSuccess (Success (200)) {Number} city_id The offer city id.
+ * @apiSuccess (Success (200)) {Number} square_meters The offer square meters.
+ * @apiSuccess (Success (200)) {Number} nb_rooms The offer number of rooms.
+ * @apiSuccess (Success (200)) {Number} nb_bedrooms The offer number of bedrooms.
+ *
+ * @apiSuccessExample Success Example
+ * [
+ *   {
+ *      "id": 52,
+ *      "images": [
+ *        "https://img.r3tests.net/good-properties/29/1726480453039.jpeg",
+ *        "https://img.r3tests.net/good-properties/29/1726480453050.jpeg"
+ *      ]
+ *      "type_of_good": "apartment",
+ *      "transaction_type": "to-rent",
+ *      "price": 8000,
+ *      "city_id": 67865,
+ *      "square_meters": 24,
+ *      "nb_rooms": 2,
+ *      "nb_bedrooms": 1
+ *   }
+ * ]
+ *
+ * @apiPermission Public
+ */
+const searchOffers = async (req, res, next) => {
+  const {
+    type_of_good,
+    transaction_type,
+    min_price,
+    max_price,
+    min_square_meters,
+    max_square_meters,
+    nb_rooms,
+    nb_bedrooms
+  } = req.query;
+  let { city_ids } = req.query;
+
+  city_ids = city_ids.split(',');
+
+  const where = {
+    type_of_good,
+    transaction_type,
+    city_id: { [Op.in]: city_ids }
+  };
+
+  if (min_price || max_price) {
+    where.price = {};
+
+    if (min_price) {
+      where.price[Op.gte] = min_price;
+    }
+
+    if (max_price) {
+      where.price[Op.lte] = max_price;
+    }
+  }
+
+  if (min_square_meters || max_square_meters) {
+    where.square_meters = {};
+
+    if (min_square_meters) {
+      where.square_meters[Op.gte] = min_square_meters;
+    }
+
+    if (max_square_meters) {
+      where.square_meters[Op.lte] = max_square_meters;
+    }
+  }
+
+  if (nb_rooms) {
+    where.nb_rooms = nb_rooms;
+  }
+
+  if (nb_bedrooms) {
+    where.nb_bedrooms = nb_bedrooms;
+  }
+
+  const offers = (
+    await Offer.findAll({
+      where,
+      include: {
+        model: OfferImage,
+        required: true
+      }
+    })
+  ).map((offer) => {
+    const { id, type_of_good, transaction_type, price, city_id, square_meters, nb_rooms, nb_bedrooms } = offer;
+    const images = offer.OfferImages.map((image) => image.link);
+
+    return {
+      id,
+      images,
+      type_of_good,
+      transaction_type,
+      price,
+      city_id,
+      square_meters,
+      nb_rooms,
+      nb_bedrooms
+    };
+  });
+
+  res.status(httpStatus.OK).json(offers);
+};
+
+export { getFeatures, getMyOffersMeta, getMyOffers, getOffer, createOffer, searchOffers };
