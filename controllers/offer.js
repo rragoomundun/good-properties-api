@@ -1,6 +1,6 @@
 import httpStatus from 'http-status-codes';
 
-import { Op } from 'sequelize';
+import { Op, literal } from 'sequelize';
 
 import Offer from '../models/Offer.js';
 import OfferImage from '../models/OfferImage.js';
@@ -360,6 +360,7 @@ const createOffer = async (req, res, next) => {
  * @apiQuery {Number} [max_square_meters] The maximum square meters
  * @apiQuery {Number} [nb_rooms] The number of rooms
  * @apiQuery {Number} [nb_bedrooms] The number of bedrooms
+ * @apiQuery {Number[]} [features] An array containing the desired features ids
  *
  * @apiSuccess (Success (200)) {Number} id The offer id.
  * @apiSuccess (Success (200)) {String[]} images The offer images.
@@ -402,7 +403,7 @@ const searchOffers = async (req, res, next) => {
     nb_rooms,
     nb_bedrooms
   } = req.query;
-  let { city_ids } = req.query;
+  let { city_ids, features } = req.query;
 
   city_ids = city_ids.split(',');
 
@@ -442,6 +443,16 @@ const searchOffers = async (req, res, next) => {
 
   if (nb_bedrooms) {
     where.nb_bedrooms = nb_bedrooms;
+  }
+
+  if (features) {
+    where[Op.and] = [
+      literal(`ARRAY[${features}] <@ (SELECT ARRAY (
+        SELECT offer_feature_id
+        FROM offer_offer_features
+        WHERE offer_id = "Offer"."id"
+      ))`)
+    ];
   }
 
   const offers = (
