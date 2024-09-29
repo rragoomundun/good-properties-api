@@ -12,6 +12,7 @@ import Contact from '../models/Contact.js';
 import dbUtil from '../utils/db.js';
 
 const MY_OFFERS_PAGE_LIMIT = 20;
+const SEARCH_PAGE_LIMIT = 20;
 
 /**
  * @api {GET} /offer/features Get Features
@@ -344,55 +345,7 @@ const createOffer = async (req, res, next) => {
   res.status(httpStatus.OK).json({ id: result.offer.id });
 };
 
-/**
- * @api {GET} /offer/search Search Offers
- * @apiGroup Offer
- * @apiName OfferSearch
- *
- * @apiDescription Search for offers
- *
- * @apiQuery {String="house","apartment","room"} type_of_good The type of good
- * @apiQuery {String="to-sell","to-rent"} transaction_type The type of transaction
- * @apiQuery {Number[]} city_ids A list of city id
- * @apiQuery {Number} [min_price] The mimimum price
- * @apiQuery {Number} [max_price] The maximum price
- * @apiQuery {Number} [min_square_meters] The minimum square meters
- * @apiQuery {Number} [max_square_meters] The maximum square meters
- * @apiQuery {Number} [nb_rooms] The number of rooms
- * @apiQuery {Number} [nb_bedrooms] The number of bedrooms
- * @apiQuery {Number[]} [features] An array containing the desired features ids
- *
- * @apiSuccess (Success (200)) {Number} id The offer id.
- * @apiSuccess (Success (200)) {String[]} images The offer images.
- * @apiSuccess (Success (200)) {String} type_of_good The offer type of good.
- * @apiSuccess (Success (200)) {String} transaction_type The offer transaction type.
- * @apiSuccess (Success (200)) {Number} price The offer price.
- * @apiSuccess (Success (200)) {Number} city_id The offer city id.
- * @apiSuccess (Success (200)) {Number} square_meters The offer square meters.
- * @apiSuccess (Success (200)) {Number} nb_rooms The offer number of rooms.
- * @apiSuccess (Success (200)) {Number} nb_bedrooms The offer number of bedrooms.
- *
- * @apiSuccessExample Success Example
- * [
- *   {
- *      "id": 52,
- *      "images": [
- *        "https://img.r3tests.net/good-properties/29/1726480453039.jpeg",
- *        "https://img.r3tests.net/good-properties/29/1726480453050.jpeg"
- *      ]
- *      "type_of_good": "apartment",
- *      "transaction_type": "to-rent",
- *      "price": 8000,
- *      "city_id": 67865,
- *      "square_meters": 24,
- *      "nb_rooms": 2,
- *      "nb_bedrooms": 1
- *   }
- * ]
- *
- * @apiPermission Public
- */
-const searchOffers = async (req, res, next) => {
+const searchWhere = (query) => {
   const {
     type_of_good,
     transaction_type,
@@ -402,8 +355,8 @@ const searchOffers = async (req, res, next) => {
     max_square_meters,
     nb_rooms,
     nb_bedrooms
-  } = req.query;
-  let { city_ids, features } = req.query;
+  } = query;
+  let { city_ids, features } = query;
 
   city_ids = city_ids.split(',');
 
@@ -455,13 +408,113 @@ const searchOffers = async (req, res, next) => {
     ];
   }
 
+  return where;
+};
+
+/**
+ * @api {GET} /offer/search/meta
+ * @apiGroup Offer
+ * @apiName OfferSearchMeta
+ *
+ * @apiDescription Get meta information for a specific search query.
+ *
+ * @apiQuery {String="house","apartment","room"} type_of_good The type of good
+ * @apiQuery {String="to-sell","to-rent"} transaction_type The type of transaction
+ * @apiQuery {Number[]} city_ids A list of city id
+ * @apiQuery {Number} [min_price] The mimimum price
+ * @apiQuery {Number} [max_price] The maximum price
+ * @apiQuery {Number} [min_square_meters] The minimum square meters
+ * @apiQuery {Number} [max_square_meters] The maximum square meters
+ * @apiQuery {Number} [nb_rooms] The number of rooms
+ * @apiQuery {Number} [nb_bedrooms] The number of bedrooms
+ * @apiQuery {Number[]} [features] An array containing the desired features ids
+ *
+ * @apiSuccess (Success (200)) {Number} nb_pages The number of pages for the search query.
+ *
+ * @apiSuccessExample Success Example
+ * {
+ *   "nb_pages": 4
+ * }
+ *
+ * @apiPermission Public
+ */
+const searchOffersMeta = async (req, res, next) => {
+  const where = searchWhere(req.query);
+  const totalResult = await Offer.count({ where });
+  const nbPages = Math.ceil(totalResult / SEARCH_PAGE_LIMIT);
+
+  res.status(httpStatus.OK).json({ nb_pages: nbPages });
+};
+
+/**
+ * @api {GET} /offer/search Search Offers
+ * @apiGroup Offer
+ * @apiName OfferSearch
+ *
+ * @apiDescription Search for offers
+ *
+ * @apiQuery {String="house","apartment","room"} type_of_good The type of good
+ * @apiQuery {String="to-sell","to-rent"} transaction_type The type of transaction
+ * @apiQuery {Number[]} city_ids A list of city id
+ * @apiQuery {Number} [min_price] The mimimum price
+ * @apiQuery {Number} [max_price] The maximum price
+ * @apiQuery {Number} [min_square_meters] The minimum square meters
+ * @apiQuery {Number} [max_square_meters] The maximum square meters
+ * @apiQuery {Number} [nb_rooms] The number of rooms
+ * @apiQuery {Number} [nb_bedrooms] The number of bedrooms
+ * @apiQuery {Number[]} [features] An array containing the desired features ids
+ *
+ * @apiSuccess (Success (200)) {Number} id The offer id.
+ * @apiSuccess (Success (200)) {String[]} images The offer images.
+ * @apiSuccess (Success (200)) {String} type_of_good The offer type of good.
+ * @apiSuccess (Success (200)) {String} transaction_type The offer transaction type.
+ * @apiSuccess (Success (200)) {Number} price The offer price.
+ * @apiSuccess (Success (200)) {Number} city_id The offer city id.
+ * @apiSuccess (Success (200)) {Number} square_meters The offer square meters.
+ * @apiSuccess (Success (200)) {Number} nb_rooms The offer number of rooms.
+ * @apiSuccess (Success (200)) {Number} nb_bedrooms The offer number of bedrooms.
+ *
+ * @apiSuccessExample Success Example
+ * [
+ *   {
+ *      "id": 52,
+ *      "images": [
+ *        "https://img.r3tests.net/good-properties/29/1726480453039.jpeg",
+ *        "https://img.r3tests.net/good-properties/29/1726480453050.jpeg"
+ *      ]
+ *      "type_of_good": "apartment",
+ *      "transaction_type": "to-rent",
+ *      "price": 8000,
+ *      "city_id": 67865,
+ *      "square_meters": 24,
+ *      "nb_rooms": 2,
+ *      "nb_bedrooms": 1
+ *   }
+ * ]
+ *
+ * @apiPermission Public
+ */
+const searchOffers = async (req, res, next) => {
+  const where = searchWhere(req.query);
+  let page, offset;
+
+  if (req.query.page) {
+    page = req.query.page - 1;
+  } else {
+    page = 0;
+  }
+
+  offset = page * SEARCH_PAGE_LIMIT;
+
   const offers = (
     await Offer.findAll({
       where,
       include: {
         model: OfferImage,
         required: true
-      }
+      },
+      limit: SEARCH_PAGE_LIMIT,
+      offset
     })
   ).map((offer) => {
     const { id, type_of_good, transaction_type, price, city_id, square_meters, nb_rooms, nb_bedrooms } = offer;
@@ -483,4 +536,4 @@ const searchOffers = async (req, res, next) => {
   res.status(httpStatus.OK).json(offers);
 };
 
-export { getFeatures, getMyOffersMeta, getMyOffers, getOffer, createOffer, searchOffers };
+export { getFeatures, getMyOffersMeta, getMyOffers, getOffer, createOffer, searchOffersMeta, searchOffers };
