@@ -28,6 +28,9 @@
     "OfferCreate",
     "OfferMyOffersMeta",
     "OfferMyOffers",
+    "Article",
+    "ArticleGetAll",
+    "ArticleGet",
     "File",
     "FileUpload",
     "FileDelete"
