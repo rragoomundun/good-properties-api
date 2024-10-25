@@ -66,9 +66,9 @@ const getAllArticles = async (req, res, next) => {
  */
 const getArticle = async (req, res, next) => {
   const { articleId } = req.params;
-  const article = await Article.findAll({ where: { id: articleId } });
+  const article = await Article.findOne({ where: { id: articleId } });
 
-  if (article.length === 0) {
+  if (article === null) {
     return next(new ErrorResponse('Cannot find article', httpStatus.NOT_FOUND, 'NOT_FOUND'));
   }
 
